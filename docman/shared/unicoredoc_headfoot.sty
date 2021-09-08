@@ -1,0 +1,39 @@
+% ##############################################################################
+% ### Header and Footer Page
+% ##############################################################################
+
+\pagestyle{fancyplain}
+\setcounter{page}{1}
+
+
+% Define front/main/back matter if not available
+\@ifundefined{frontmatter}{
+  \def\frontmatter{\cleardoublepage\pagenumbering{roman}\chead[]{\DBKcheadfront}}
+}{}
+\@ifundefined{mainmatter}{
+  \def\mainmatter{\cleardoublepage\pagenumbering{arabic}\chead[]{\DBKcheadbody}}
+}{}
+\@ifundefined{backmatter}{
+  \def\backmatter{\if@openright\cleardoublepage\else\clearpage\fi}
+}{}
+
+
+% Fancy header/footer for the first page
+
+\chead[]{}
+
+\lfoot[]{\@ifundefined{DBKpublisher}{}{\DBKpublisher}}
+\rfoot[]{}
+\cfoot[]{}
+
+% Fancy header/footer for the front matter
+
+\def\DBKcheadfront{\DBKtitle \hfill}
+
+% Fancy header/footer for the doc body
+
+\def\DBKcheadbody{\DBKtitle \hfill \thepage{}}
+
+\lhead[]{}
+\rhead[]{}
+

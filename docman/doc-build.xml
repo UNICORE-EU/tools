@@ -1,0 +1,277 @@
+<?xml version="1.0"?>
+<project xmlns:mvn="urn:maven-artifact-ant" name="docman" default="doc-all" basedir="../..">
+	<!-- Short manual: 
+		Property docman.enabled must be set to make this working. It is best to set it in your pom.
+
+		By default component version in documentation is set to component version from the pom. You 
+		can override this (e.g. to provide '1.3.2-1.3.6' value) by setting doc.compversion property.
+		
+		Property doc.src specifies the main asciidoc file. All other files required for the 
+		documentatation build must be in the same folder (or its subdirectories). The best is
+		to stick to default which is src/main/doc/manual.txt, otherwise overwrite it in your pom.
+
+		Property doc.target is used to specify the output base name. This name shall be used e.g. in 
+		APT page, with appropriate extension. The default is 'manual'. It will be placed in target/site. 
+
+		Property doc.template is used to specify the template, one of the subdirectories. The template
+		is used for pdf output only.
+	-->
+
+
+	<description>Builds the documentation using asciidoc</description>
+	
+	<property name="docmandir" value="target/tools/docman"/>
+	<property name="workdir" value="${docmandir}/workspace"/>
+	<property name="targetdir" value="target/site"/>
+	<property name="confdir" value="${docmandir}/asciidoc-conf"/>
+
+
+	<target name="download-tools"
+		description="Downloads third party tools for the build and sets up some task defs">
+	  <mkdir dir="${docmandir}/tools"/>
+	  <get src="https://repo1.maven.org/maven2/ant-contrib/ant-contrib/1.0b3/ant-contrib-1.0b3.jar"
+	       dest="${docmandir}/tools/ant-contrib-1.0b3.jar" verbose="true" skipexisting="true" />
+
+	  <taskdef resource="net/sf/antcontrib/antlib.xml">
+	    <classpath>
+	      <pathelement location="${docmandir}/tools/ant-contrib-1.0b3.jar" />
+	    </classpath>
+	  </taskdef>
+	</target>
+	  
+	<target name="check-if-enabled" unless="docman.enabled">
+		<echo message="Asciidoc subsystem is disabled, define 'docman.enabled' property to turn it on." />
+	</target>
+
+	<target name="check-source" unless="doc.src">
+		<property name="doc.src" value="src/main/doc/manual.txt" />
+	</target>
+
+	<target name="set-compversion" if="doc.compversion">
+		<property name="doc.version" value="${doc.compversion}"/>
+	</target>
+
+	<target name="set-compversion2" if="doc.relversion">
+		<property name="doc.version" value="${doc.relversion}"/>
+	</target>
+
+	<target name="check-version" unless="doc.version">
+		<fail message="You must set 'doc.relversion' or 'doc.compversion' property"/>
+	</target>
+
+	<target name="check-target" unless="doc.target">
+		<property name="doc.target" value="manual" />
+	</target>
+
+	<target name="check-template" unless="doc.template">
+		<property name="doc.template" value="plain" />
+	</target>
+
+	<target name="recursive-bundle">
+		<antcall target="process-bundle">
+			<param name="url" value="${url}"/>
+		</antcall>
+	</target>
+	
+	<target name="process-bundle">
+		<echo message="Downloading external documentation bundle: ${url}"/>
+		<mkdir dir="${workdir}"/>
+		
+		<math result="index">
+		        <op op="round" datatype="double">
+		            <op op="*" datatype="double">
+		                <num value="100000"/>
+		                <op op="random"/>
+		            </op>
+		        </op>
+		</math>
+		
+		<get src="${url}" dest="${workdir}/tmp-doc-bundle-${index}.properties"/>
+
+		<property file="${workdir}/tmp-doc-bundle-${index}.properties" prefix="loadedb-${index}."/>
+
+		<!-- Get files which are local to the bundle -->
+		<propertyselector property="bundlefiles-${index}"
+		                         delimiter="|"
+		                         match="loadedb-${index}\.file\..*"
+		                         casesensitive="false" />
+		<if>
+			<isset property="bundlefiles-${index}" />
+			<then>
+				<propertycopy name="bundlefiles" from="bundlefiles-${index}" override="true" />
+				<echo message="${bundlefiles}" />
+				<for list="${bundlefiles}" param="filevar" delimiter="|">
+					<sequential>
+					  <propertyregex property="fileurl" input="${url}" regexp="(.*)/([^/]+).*" replace="\1/${@{filevar}}" casesensitive="false" override="true" />
+					  <propertyregex property="queryparam" input="${url}" regexp="(.*)(\\?format=raw)" select="\2" casesensitive="false" override="true" />
+					  <get src="${fileurl}?${queryparam}" dest="${workdir}" />					  
+					</sequential>
+				</for>
+			</then>
+		</if>
+
+		<!-- Get files which are external to the bundle -->
+		<propertyselector property="bundleurls-${index}"
+		                         delimiter="|"
+		                         match="loadedb-${index}\.url\..*"
+		                         casesensitive="false" />
+		<if>
+			<isset property="bundleurls-${index}" />
+			<then>
+				<propertycopy name="bundleurls" from="bundleurls-${index}" override="true" />
+				<echo message="${bundleurls}" />
+				<for list="${bundleurls}" param="urlvar" delimiter="|">
+					<sequential>
+						<get src="${@{urlvar}}" dest="${workdir}" />
+					</sequential>
+				</for>
+			</then>
+		</if>
+
+
+		
+		<!-- Generate reference documentation defined in the bundle -->
+		<propertyselector property="bundleToGen-${index}"
+		                         delimiter="|"
+		                         match="loadedb-${index}\.generate\..*"
+		                         casesensitive="false" />
+		<if>
+			<isset property="bundleToGen-${index}" />
+			<then>
+				<propertycopy name="bundleToGen" from="bundleToGen-${index}" override="true" />
+				<echo message="${bundleToGen}" />
+				<for list="${bundleToGen}" param="genvar" delimiter="|">
+					<sequential>
+						<echo message="Generating from: ${workdir} ${@{genvar}}" />
+						<java fork="true"
+						      classname="eu.unicore.util.configuration.AsciidocFormatter">
+							<arg line="${workdir} ${@{genvar}}"/>
+							<classpath>
+								<pathelement path="${compile.classpath}" />
+							</classpath>
+						</java>
+					</sequential>
+				</for>
+			</then>
+		</if>
+
+		<!-- Download bundles referenced from our bundle -->
+		<propertyselector property="bundleBundle-${index}"
+		                         delimiter="|"
+		                         match="loadedb-${index}\.bundle\..*"
+		                         casesensitive="false" />
+		<if>
+			<isset property="bundleBundle-${index}"/>
+			<then>
+				<propertycopy name="bundleBundle" from="bundleBundle-${index}" override="true"/>
+				<echo message="${bundleBundle}"/>
+				<for list="${bundleBundle}" param="bunvar" delimiter="|">
+					<sequential>
+						<echo message="Processing nested bundle: ${@{bunvar}}"/>
+						<antcall target="recursive-bundle">
+							<param name="url" value="${@{bunvar}}"/>
+						</antcall>
+					</sequential>
+				</for>
+			</then>
+		</if>
+
+		<!-- clean up -->
+		<delete file="${workdir}/tmp-doc-bundle-${index}.properties"/>
+	</target>
+
+	<target name="download-bundles" if="doc.includeBundle">
+		<foreach list="${doc.includeBundle}" param="url" delimiter=" " target="process-bundle" inheritall="true"/>
+	</target>
+
+<!--
+	<target name="test">
+		<property name="doc.includeBundle" value="file:///${basedir}/testbundle.properties file:///${basedir}/testbundle2.properties"/>
+		<property name="compile.classpath" value="/home/golbi/.m2/repository/eu/unicore/security/securityLibrary/3.0.0-SNAPSHOT/securityLibrary-3.0.0-SNAPSHOT.jar"/>
+		<antcall target="download-bundles"/>
+	</target>
+-->
+	
+	<target name="prepare" depends="download-tools,check-if-enabled,check-source,set-compversion,set-compversion2,check-version,check-target,check-template,download-bundles" if="docman.enabled">
+
+		<echo message="Component version ('doc.relversion' or 'doc.compversion' property): ${doc.version}"/>
+		<echo message="Documentation main source ('doc.src' property):                     ${doc.src}"/>
+		<echo message="Documentation target file basename ('doc.target' property):         ${doc.target}"/>
+		<echo message="Documentation template directory ('doc.template' property):         ${doc.template}"/>
+
+		<dirname property="doc.src.dir" file="${doc.src}"/>
+		<basename property="doc.src.file" file="${doc.src}"/>
+
+		<mkdir dir="${targetdir}"/>
+		<mkdir dir="${workdir}"/>
+
+		<copy todir="${workdir}">
+			<fileset dir="${doc.src.dir}"/>
+		</copy>
+		<copy todir="${targetdir}">
+			<fileset dir="${doc.src.dir}">
+				<exclude name="*.txt"/>
+			</fileset>
+		</copy>
+		<tstamp>
+			<format property="TODAY" pattern="dd MM yyyy" locale="en,UK"/>
+		</tstamp>
+	</target>
+
+	<target name="doc-all" depends="asciidoc-html,pdf" description="Builds documentation in all formats" if="docman.enabled"/>
+
+	<target name="asciidoc-html" depends="prepare" description="Builds single-page HTML documentation" if="docman.enabled">
+		<exec executable="asciidoc" osfamily="unix" failifexecutionfails="false">
+			<arg value="-n"/>
+			<arg value="-f" />
+			<arg value="${confdir}/asciidoc.conf" />
+			<arg value="-f" />
+			<arg value="${confdir}/xhtml11.conf" />
+			<arg value="-a"/>
+			<arg value="toc"/>
+			<arg value="-a"/>
+			<arg value="revdate=${TODAY}"/>
+			<arg value="-a"/>
+			<arg value="revremark=component version: ${doc.version}"/>
+			<arg value="-o"/>
+			<arg value="${targetdir}/${doc.target}.html"/>
+			<arg value="${workdir}/${doc.src.file}"/>
+		</exec>
+	</target>
+
+	<target name="asciidoc-docbook" depends="prepare" if="docman.enabled">
+		<exec executable="asciidoc" osfamily="unix" failifexecutionfails="false">
+			<arg value="-b"/>
+			<arg value="docbook"/>
+			<arg value="-n"/>
+			<arg value="-f" />
+			<arg value="${confdir}/asciidoc.conf" />
+			<arg value="-f" />
+			<arg value="${confdir}/docbook.conf" />
+			<arg value="-a"/>
+			<arg value="revdate=${TODAY}"/>
+			<arg value="-a"/>
+			<arg value="authorinitials=\&quot;UNICORE Team\&quot;"/>
+			<arg value="-o"/>
+			<arg value="${workdir}/${doc.target}.xml"/>
+			<arg value="${workdir}/${doc.src.file}"/>
+		</exec>
+	</target>
+	<target name="pdf" depends="asciidoc-docbook" description="Builds PDF documentation" if="docman.enabled">
+		<exec executable="dblatex" osfamily="unix" failifexecutionfails="false">
+			<arg value="-P"/>
+			<arg value="component.version=${doc.version}"/>
+			<arg value="-P"/>
+			<arg value="doc.collab.show=0"/>
+			<arg value="-P"/>
+			<arg value="doc.lot.show="/>
+			<arg value="-P"/>
+			<arg value="toc.section.depth=2"/>
+			<arg value="--texstyle=${docmandir}/${doc.template}/unicoredoc.sty"/>
+			<arg value="--xsl-user=${docmandir}/${doc.template}/unicoredoc.xsl"/>
+			<arg value="-o"/>
+			<arg value="${targetdir}/${doc.target}.pdf"/>
+			<arg value="${workdir}/${doc.target}.xml"/>
+		</exec>
+	</target>
+</project>

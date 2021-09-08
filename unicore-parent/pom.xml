@@ -147,7 +147,7 @@
               <executable>bash</executable>
               <arguments>
 		<argument>-c</argument>
-                <argument>[ -d target/docman ] || svn export https://svn.code.sf.net/p/unicore/svn/tools/docman/trunk target/docman</argument>
+                <argument>[ -d target/tools ] || git clone --depth 1 https://github.com/UNICORE-EU/tools.git target/tools</argument>
               </arguments>
             </configuration>
             <goals>
@@ -168,7 +168,7 @@
               <target>
                 <property name="doc.relversion" value="${project.version}"/>
                 <property name="compile.classpath" refid="maven.compile.classpath"/>
-                <ant antfile="${basedir}/target/docman/doc-build.xml"/>
+                <ant antfile="${basedir}/target/tools/docman/doc-build.xml"/>
               </target>
             </configuration>
             <goals>
