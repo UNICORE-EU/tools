@@ -687,13 +687,18 @@
 	</target>
 
 	<target name="rpm-bin-build">
-		<echo message="Build rpm" />
+	  	<echo message="Build rpm" />
+	        <tstamp>
+                        <format property="release.timestamp" locale="en,US" pattern="EEE MMM dd yyyy"/>
+		</tstamp>
+		<echo message="Have release-timestamp : ${release.timestamp}"/>
 		<echo message="---copy spec file" />
 		<copy tofile="${distribution.base}/../component.spec">
 			<fileset file="${main.dir}/${package.config.dir}/distributions/${distribution}/component.spec_template" />
 			<filterset>
 				<filter token="component-version" value="${package.version}" />
 				<filter token="component-release" value="${package.release}" />
+				<filter token="release-timestamp" value="${release.timestamp}" />
 				<filter token="component-name" value="${component.package.name}" />
 				<filter token="component-prefix" value="${package.prefix}" />
 				<filter token="component-suffix" value="${package.suffix}" />
@@ -760,7 +765,10 @@
 
 	<target name="prepare-bin-deb-structure" depends="prepare-distribution-structure">
 		<echo message="Preparing deb structure" />
-
+	        <tstamp>
+                        <format property="release.timestamp" locale="en,US" pattern="EEE, dd MMM yyyy HH:mm:ss Z"/>
+		</tstamp>
+		<echo message="Have release-timestamp : ${release.timestamp}"/>
 		<echo message="-- copying files from debian" />
 		<mkdir dir="${distribution.base}/../debian" />
 		<copy todir="${distribution.base}/../debian">
@@ -768,6 +776,7 @@
 			<filterset>
 				<filter token="component-version" value="${package.version}" />
 				<filter token="component-release" value="${package.release}" />
+				<filter token="release-timestamp" value="${release.timestamp}" />
 				<filter token="component-name" value="${component.package.name}" />
 				<filter token="component-prefix" value="${package.prefix}" />
 				<filter token="component-suffix" value="${package.suffix}" />
