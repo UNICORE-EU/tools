@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project xmlns:mvn="urn:maven-artifact-ant" name="docman" default="doc-all" basedir="../..">
+<project xmlns:mvn="urn:maven-artifact-ant" name="docman" default="doc-all" basedir="../../..">
 	<!-- Short manual: 
 		Property docman.enabled must be set to make this working. It is best to set it in your pom.
 
