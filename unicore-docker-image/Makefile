@@ -4,7 +4,10 @@ CONTAINER      = $(CONTAINER_NAME):$(CONTAINER_TAG)
 
 .PHONY: build run
 
-build: Dockerfile docker-entrypoint.sh
+unicore-servers.tgz:
+	@wget https://sourceforge.net/projects/unicore/files/Servers/Core/8.3.0-p1/unicore-servers-8.3.0-p1.tgz/download -O unicore-servers.tgz
+
+build: unicore-servers.tgz Dockerfile docker-entrypoint.sh
 	docker build -t $(CONTAINER) .
 
 run: build
