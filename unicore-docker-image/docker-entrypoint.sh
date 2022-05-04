@@ -84,8 +84,6 @@ _unicore_setup() {
     cd /opt/unicore
     mv /tmp/unicore-servers.tgz /opt/unicore
     chown unicore:unicore /opt/unicore/unicore-servers.tgz
-
-    sudo -u unicore mv /tmp/unicore-servers.tgz /opt/unicore
     sudo -u unicore tar xzf unicore-servers.tgz
     rm unicore-servers.tgz
     sudo -u unicore mv unicore-servers-* unicore-servers
