@@ -12,7 +12,7 @@ build: unicore-servers.tgz Dockerfile docker-entrypoint.sh
 	docker build -t $(CONTAINER) .
 
 run: build
-	docker run --network host -ti --rm $(CONTAINER)
+	docker run -p 8080:8080 -ti --rm $(CONTAINER)
 
 clean:
 	@find -name "*~" -delete
