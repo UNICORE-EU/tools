@@ -95,6 +95,33 @@ _unicore_setup() {
     sudo -u unicore python3 ./configure.py
     sudo -u unicore python3 ./install.py
 
+    # Add Workflow endpoint to UNICORE/X
+    cd /opt/unicore/unicore-servers
+    sudo -u unicore cp workflow/lib/workflow*.jar unicorex/lib
+    sudo -u unicore cp workflow/conf/xacml2Policies/20workflowServices.xml unicorex/conf/xacml2Policies/
+    echo "# start Workflow service" >> unicorex/conf/uas.config
+    echo "container.onstartup.1=org.chemomentum.dsws.util.SetupWorkflowService" >> unicorex/conf/uas.config
+
+    # configure user mapping so jobs run as "demouser"
+    sudo -u unicore cat > /opt/unicore/unicore-servers/unicorex/conf/simpleuudb <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ User mapping / attributes file
+-->
+<fileAttributeSource>
+
+   <entry key="CN=Demo User, O=UNICORE, C=EU">
+      <attribute name="role">
+         <value>user</value>
+      </attribute>
+      <attribute name="xlogin">
+         <value>demouser</value>
+      </attribute>
+   </entry>
+
+</fileAttributeSource>
+EOF
+
     # TSI for Slurm
     cd /opt/unicore/unicore-servers/tsi
     sudo -u unicore ./Install.sh slurm /opt/unicore/tsi_slurm
@@ -115,7 +142,6 @@ tsi.getfacl=getfacl
 tsi.acl./=NONE
 tsi.usersCacheTtl=600
 tsi.safe_dir=/tmp
-
 EOF
 
     /opt/unicore/tsi_slurm/bin/start.sh
