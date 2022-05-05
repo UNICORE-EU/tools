@@ -18,11 +18,8 @@ and uses Slurm to provide a single "compute node".
 To start the container:
 
 ```bash
- make build
- make run
+docker run -p 8080:8080 -ti ghcr.io/unicore-eu/unicore-testing-all
 ```
-
-(the first invocation of "make build" may take a couple minutes.)
 
 The container exposes UNICORE REST APIs on localhost
 
@@ -51,6 +48,12 @@ Verify the build worked:
 
 ```bash
 docker image ls
+```
+
+You can also start the container using
+
+```bash
+make run
 ```
 
 ## Examples
