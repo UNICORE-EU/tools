@@ -9,7 +9,7 @@ unicore-servers.tgz:
 	@wget https://sourceforge.net/projects/unicore/files/Servers/Core/$(VERSION)/unicore-servers-$(VERSION).tgz/download -O unicore-servers.tgz
 
 build: unicore-servers.tgz Dockerfile docker-entrypoint.sh
-	docker build -t $(CONTAINER) .
+	docker build -t ghcr.io/unicore-eu/$(CONTAINER) .
 
 run: build
 	docker run -p 8080:8080 -ti --rm $(CONTAINER)

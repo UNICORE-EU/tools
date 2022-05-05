@@ -11,12 +11,10 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get install -m -y \
     default-jre-headless
 
 COPY docker-entrypoint.sh /usr/local/bin/
-COPY unicore-servers.tgz /tmp
-COPY configure.properties /tmp
+COPY unicore-servers.tgz configure.properties /tmp/
 
 EXPOSE 8080
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 CMD ["bash"]
-
