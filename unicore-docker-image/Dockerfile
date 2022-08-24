@@ -3,10 +3,15 @@ FROM ubuntu:22.04
 RUN apt-get update -q
 
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
-    sudo nano less hostname hwloc wget tree telnet \
-    cmake make pkgconf \
-    munge slurm slurmctld slurmd \
-    python3 python3-pip \
+    sudo nano less \
+    hostname wget curl
+
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
+    hwloc make \
+    munge slurm slurmctld slurmd
+
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
+    python3-minimal \
     default-jre-headless \
     git
 
