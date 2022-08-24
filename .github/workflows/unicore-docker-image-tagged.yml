@@ -26,4 +26,4 @@ jobs:
       run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Push image
-      run: docker push ghcr.io/unicore-eu/unicore-testing-all:${{RELEASE_VERSION}}
+      run: docker push ghcr.io/unicore-eu/unicore-testing-all:${{ env.RELEASE_VERSION }}
