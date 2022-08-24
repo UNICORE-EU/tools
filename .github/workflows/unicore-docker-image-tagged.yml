@@ -3,8 +3,7 @@ name: Versioned UNICORE Docker Image
 on:
   push:
     tags: 
-     - unicore-docker-image**
-
+     - unicore-docker-image-**
 
 jobs:
 
@@ -17,7 +16,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Get version info
-      run: echo $( echo "${GITHUB_REF##*/}" | sed "s/unicore-docker-image-//" ) >> $RELEASE_VERSION
+      run: echo $( echo "${GITHUB_REF##*/}" | sed "s/unicore-docker-image-//" ) >> $GITHUB_ENV
 
     - name: Build the Docker image
       run: cd unicore-docker-image; make build
