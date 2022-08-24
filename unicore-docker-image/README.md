@@ -1,24 +1,27 @@
 # UNICORE all-in-one test installation in Docker
 
-WORK IN PROGRESS!
-
 ## Quickstart
 
 This is a Docker container (based on Ubuntu) running an all-in-one
-UNICORE server and the Slurm workload manager (https://slurm.schedmd.com/)
+UNICORE server and the Slurm workload manager (https://slurm.schedmd.com/),
+providing a one-node mini "cluster" and UNICORE services
+to access it.
 
 This container can be used for testing your UNICORE clients
 and / or your workflows and applications.
 
 It can also serve for evaluating UNICORE and its APIs.
 
-The container runs an all-in-one UNICORE server
-and uses Slurm to provide a single "compute node".
-
-To start the container:
+To start the container in interactive mode:
 
 ```bash
 docker run -p 8080:8080 -ti ghcr.io/unicore-eu/unicore-testing-all
+```
+
+or as a detached service
+
+```bash
+docker run -p 8080:8080 -d ghcr.io/unicore-eu/unicore-testing-all
 ```
 
 The container exposes UNICORE REST APIs on localhost
@@ -56,13 +59,19 @@ You can also start the container using
 make run
 ```
 
+or in detached mode
+
+```bash
+make run-services
+```
+
+
 ## Examples
 
-You can download the UCC commandline client from sourceforge and use it
+You can download the UCC commandline client from SourceForge and use it
 to access the endpoint(s) exposed by the container.
 
 
 ## Future work
 
 Client tools IN the container will be provided in the future
-

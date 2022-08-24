@@ -1,0 +1,27 @@
+name: Versioned UNICORE Docker Image
+
+on:
+  push:
+    tags: 
+     - unicore-docker-image**
+
+
+jobs:
+
+  build-and-deploy-image:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      run: echo $( echo "${GITHUB_REF##*/}" | sed "s/unicore-docker-image-//" ) >> $RELEASE_VERSION
+
+    - name: Build the Docker image
+      run: cd unicore-docker-image; make build
+
+    - name: Log in to the Container registry
+      run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+    - name: Push image
+      run: docker push ghcr.io/unicore-eu/unicore-testing-all:${{RELEASE_VERSION}

@@ -23,7 +23,6 @@ _slurm_setup() {
 SlurmctldHost=localhost
 AuthType=auth/munge
 EnforcePartLimits=NO
-MpiDefault=pmix
 ProctrackType=proctrack/pgid
 ReturnToService=0
 SlurmctldPidFile=/var/run/slurm/slurmctld.pid
@@ -157,11 +156,18 @@ _main() {
     echo "Setting up UNICORE..."
     _unicore_setup
 
-    if [[ "${1:0:1}" = "-" ]]; then
-        echo "Please pass a program name to the container!"
-        exit 1
+    if [[ -t 0 && -t 1 ]] ; then
+	echo "Running interactive shell"
+	if [[ "${1:0:1}" = "-" ]]; then
+            echo "Please pass a program name to the container!"
+            exit 1
+	else
+            exec "$@"
+	fi
     else
-        exec "$@"
+	echo "Running detached"
+	# just keep the services running
+	tail -f /opt/unicore/unicore-servers/unicorex/logs/startup.log
     fi
 }
 
