@@ -15,6 +15,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+
+    - name: Get version info
       run: echo $( echo "${GITHUB_REF##*/}" | sed "s/unicore-docker-image-//" ) >> $RELEASE_VERSION
 
     - name: Build the Docker image
