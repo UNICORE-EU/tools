@@ -25,3 +25,6 @@ EXPOSE 8080
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 CMD ["bash"]
+
+HEALTHCHECK --interval=30s --timeout=10s --retries=10\
+ CMD curl -k -s -f -X OPTIONS https://localhost:8080/DEMO-SITE/rest/core || exit 1
