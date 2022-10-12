@@ -65,13 +65,15 @@ or in detached mode
 make run-services
 ```
 
+To use a different port on the host than the default 8080, specify the port
+on the command line, for example
+
+```bash
+make run-services PORT=7000
+```
+
 
 ## Examples
 
 You can download the UCC commandline client from SourceForge and use it
 to access the endpoint(s) exposed by the container.
-
-
-## Future work
-
-Client tools IN the container will be provided in the future
