@@ -395,6 +395,7 @@
 		<echo message="Preparing structure" />
 		<echo message="-- copying files from default" />
 		<mkdir dir="${distribution.base}" />
+		<mkdir dir="${src.distribution.selected}" />
 		<copy todir="${distribution.base}">
 			<fileset dir="${src.distribution.default}">
 				<exclude name="**/*.svn" />
