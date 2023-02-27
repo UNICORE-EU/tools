@@ -1,5 +1,5 @@
 CONTAINER_NAME = unicore-testing-all
-VERSION        = 9.1.1
+VERSION        = 9.1.2
 PATCH          = ""
 CONTAINER_REPO = ghcr.io/unicore-eu
 CONTAINER      = $(CONTAINER_REPO)/$(CONTAINER_NAME)
@@ -29,6 +29,13 @@ run-services: build
 	@echo "*** Starting UNICORE services on localhost:8080 ..."
 	@echo "***"
 	docker run -p ${PORT}:8080 -d --rm $(CONTAINER):${VERSION}
+
+run-tsi-only: build
+	@echo "***"
+	@echo "*** Starting UNICORE Slurm TSI on localhost:4433 ..."
+	@echo "***"
+	$(eval DOCKERHOST=$(shell docker network inspect --format '{{range .IPAM.Config}}{{.Gateway}}{{end}}' bridge))
+	docker run -p 4433:4433 -e "TSI_ONLY=true" --add-host dockerhost:$(DOCKERHOST) -d --rm $(CONTAINER):${VERSION}
 
 clean:
 	@find -name "*~" -delete
