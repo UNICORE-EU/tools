@@ -137,9 +137,11 @@ tsi.safe_dir=/tmp
 EOF
 
     /opt/unicore/tsi_slurm/bin/start.sh
-    if [[ "${TSI_ONLY}"!="" ]] ; then
+    if [[ "${TSI_ONLY}" != "" ]] ; then
 	echo "TSI only, not starting other services"
 	return
+    else
+	echo "Starting UNICORE services"
     fi
     sudo -u unicore /opt/unicore/unicore-servers/start.sh
 }
