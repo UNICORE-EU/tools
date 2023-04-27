@@ -1,0 +1,29 @@
+name: Versioned UNICORE Docker Image
+
+on:
+  push:
+    tags: 
+     - uftp-docker-image-**
+
+jobs:
+
+  build-and-deploy-image:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Get version info
+      run: echo "RELEASE_VERSION=${GITHUB_REF##*/}" | sed "s/uftp-docker-image-//" >> $GITHUB_ENV
+
+    - name: Build the Docker image
+      run: cd uftp-docker-image; make build
+
+    - name: Log in to the Container registry
+      run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+    - name: Push image
+      run: docker push ghcr.io/unicore-eu/uftp-testing-all:${{ env.RELEASE_VERSION }}
+
