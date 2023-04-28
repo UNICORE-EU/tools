@@ -62,8 +62,8 @@ export CMD_PORT=64435
 #export SSL_CONF=conf/uftpd-ssl.conf
 export ACL=conf/uftpd.acl
 
-export MAX_CONNECTIONS=8
-export MAX_STREAMS=4
+export MAX_CONNECTIONS=256
+export MAX_STREAMS=2
 export PORT_RANGE=50000:50010
 export DISABLE_IP_CHECK="yes"
 

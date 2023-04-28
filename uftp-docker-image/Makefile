@@ -7,6 +7,10 @@ CONTAINER      = $(CONTAINER_REPO)/$(CONTAINER_NAME)
 CONTAINER_TAG  = $(CONTAINER):$(VERSION)
 CONTAINER_LATEST = $(CONTAINER):latest
 
+# ports for running the services
+AUTH_PORT = 9000
+UFTP_PORT = 64434
+
 .DEFAULT_GOAL := build
 
 .PHONY: build run clean
@@ -24,13 +28,13 @@ build-latest: unicore-authserver.tgz unicore-uftpd.tgz Dockerfile docker-entrypo
 	docker build -t $(CONTAINER_LATEST) .
 
 run: build
-	docker run -p 9000:9000 -p 64434:64434 -p 50000-50010:50000-50010 -ti --rm $(CONTAINER):${VERSION}
+	docker run -p $(AUTH_PORT):9000 -p $(UFTP_PORT):64434 -p 50000-50010:50000-50010 -ti --rm $(CONTAINER):${VERSION}
 
 run-services: build
 	@echo "***"
 	@echo "*** Starting UNICORE Authserver localhost:9000 ..."
 	@echo "***"
-	docker run -p 9000:9000 -p 64434:64434 -p 50000-50010:50000-50010 -d --rm $(CONTAINER):${VERSION}
+	docker run -p $(AUTH_PORT):9000 -p $(UFTP_PORT):64434 -p 50000-50010:50000-50010 -d --rm $(CONTAINER):${VERSION}
 
 clean:
 	@find -name "*~" -delete

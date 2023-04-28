@@ -13,7 +13,7 @@ It can also serve for evaluating UFTP and its APIs.
 To start the container in interactive mode:
 
 ```bash
-docker run -p 9000:9000 -ti ghcr.io/unicore-eu/uftp-testing-all
+docker run -p 9000:9000 -p 64434:64434 -p 50000-500010:50000-50010 -ti ghcr.io/unicore-eu/uftp-testing-all
 ```
 
 or as a detached service
