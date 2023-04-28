@@ -99,7 +99,7 @@ _main() {
     else
 	echo "Running detached"
 	# just keep the services running
-	tail -f /opt/unicore/unicore-authserver/logs/authserver.log
+	tail -f /opt/unicore/unicore-authserver/logs/authserver-startup.log
     fi
 }
 
