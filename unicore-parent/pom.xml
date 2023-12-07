@@ -18,7 +18,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <exec.maven.plugin.version>3.1.0</exec.maven.plugin.version>
     <specification.version>${project.version}</specification.version>
-    <automatic.module.name>${groupId}.${artifactId}</automatic.module.name>
+    <automatic.module.name>${project.groupId}.${project.artifactId}</automatic.module.name>
   </properties>
 
   <issueManagement>
@@ -217,7 +217,12 @@
               </pluginExecutions>
             </lifecycleMappingMetadata>
           </configuration>
-        </plugin>
+	</plugin>
+	<plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.8.8</version>
+         </plugin>
       </plugins>
     </pluginManagement>
   </build>
