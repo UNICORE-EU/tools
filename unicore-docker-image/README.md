@@ -39,12 +39,8 @@ If you have Docker set up on your system, you can easily build the
 container by executing `make`.  The first build may take a few
 minutes.
 
-The default name of the container is `unicore-testing-all`. If you
-want to choose a shorter name, you can pass it as an argument when
-building the container, e.g.
-
 ```bash
-make CONTAINER_NAME=test
+make
 ```
 
 Verify the build worked:
