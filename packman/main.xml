@@ -553,15 +553,6 @@
 		<mkdir dir="${libs}" />
 		<antcall target="copy-main-artifact" />
 		<echo message="Updating jar files,download from maven repo" />
-		<!--		<mvn:remoteRepository id="vsgc-public" url="${maven.repo.url}" />
-		<mvn:localRepository id="local.repo" path="${maven.repo.local}" />
-		<mvn:mvn pom="${main.dir}/pom.xml" fork="true" mavenVersion="${maven.version}">
-			<localRepository refid="local.repo" />
-			<arg value="dependency:copy-dependencies" />
-			<arg value="-DincludeScope=runtime" />
-			<arg value="-DoutputDirectory=${libs}" />
-		</mvn:mvn> 
--->
 		<aether:pom file="${main.dir}/pom.xml" id="mypom" />
 		<aether:remoterepos id="aether.repositories">
 			<remoterepo id="vsgc-public" url="${maven.repo.url}" />
@@ -570,7 +561,7 @@
 		<aether:localrepo dir="${maven.repo.local}" />
 
 		<aether:resolve>
-			<files scopes="!test" dir="${libs}" layout="{artifactId}-{baseVersion}.{extension}" />
+			<files scopes="!test" dir="${libs}" layout="{artifactId}-{baseVersion}-{classifier}.{extension}" />
 			<remoterepos refid="aether.repositories" />
 		</aether:resolve>
 
