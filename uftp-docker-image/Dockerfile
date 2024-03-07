@@ -1,15 +1,12 @@
-FROM ubuntu:latest
+FROM ubuntu:23.10
 
 RUN apt-get update -q
 
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
-    sudo nano less \
-    hostname wget curl
+    sudo nano less hostname wget curl
 
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
-    python3-minimal \
-    default-jre-headless \
-    git
+    python3-minimal default-jre-headless 
 
 RUN rm -f /usr/local/bin/docker-entrypoint.sh
 COPY docker-entrypoint.sh /usr/local/bin/
