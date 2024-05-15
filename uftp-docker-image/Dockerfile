@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:24.04
 
 RUN apt-get update -q
 
@@ -23,4 +23,3 @@ CMD ["bash"]
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=10\
  CMD curl -k -s -f -X OPTIONS https://localhost:9000/rest/auth || exit 1
-

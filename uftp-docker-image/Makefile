@@ -1,11 +1,13 @@
-CONTAINER_NAME = uftp-testing-all
-VERSION        = 3.4.0
-AUTHVERSION    = 2.9.0
-PATCH          = ""
-CONTAINER_REPO = ghcr.io/unicore-eu
-CONTAINER      = $(CONTAINER_REPO)/$(CONTAINER_NAME)
-CONTAINER_TAG  = $(CONTAINER):$(VERSION)
+CONTAINER_NAME   = uftp-testing-all
+VERSION          = 3.4.1
+AUTHVERSION      = 2.9.0
+PATCH            = ""
+CONTAINER_REPO   = ghcr.io/unicore-eu
+CONTAINER        = $(CONTAINER_REPO)/$(CONTAINER_NAME)
+CONTAINER_TAG    = $(CONTAINER):$(VERSION)
 CONTAINER_LATEST = $(CONTAINER):latest
+DOWNLOAD_AUTH    = "https://github.com/UNICORE-EU/uftp/releases/download/authserver-$(AUTHVERSION)"
+DOWNLOAD_UFTPD   = "https://github.com/UNICORE-EU/uftpd/releases/download/$(VERSION)"
 
 # ports for running the services
 AUTH_PORT = 9000
@@ -13,15 +15,15 @@ UFTP_PORT = 64434
 
 .DEFAULT_GOAL := build
 
-.PHONY: build run clean
+.PHONY: build build-latest run clean realclean
 
 unicore-authserver.tgz:
-	@echo "Downloading Auth server ${AUTHVERSION} ..."
-	@wget --quiet https://sourceforge.net/projects/unicore/files/Servers/UFTP-AuthServer/$(AUTHVERSION)/unicore-authserver-$(AUTHVERSION)-1.tar.gz/download -O unicore-authserver.tgz
+	@echo "Downloading $(DOWNLOAD_AUTH)/unicore-authserver-$(AUTHVERSION)-1.tar.gz  ..."
+	@wget --quiet $(DOWNLOAD_AUTH)/unicore-authserver-$(AUTHVERSION)-1.tar.gz -O unicore-authserver.tgz
 
 unicore-uftpd.tgz:
-	@echo "Downloading UFTPD ${VERSION} ..."
-	@wget --quiet https://sourceforge.net/projects/unicore/files/Servers/UFTPD/$(VERSION)/unicore-uftpd-$(VERSION)-1.tar.gz/download -O unicore-uftpd.tgz
+	@echo "Downloading $(DOWNLOAD_UFTPD) ..."
+	@wget --quiet $(DOWNLOAD_UFTPD)/unicore-uftpd-$(VERSION)-1.tar.gz -O unicore-uftpd.tgz
 
 build: unicore-authserver.tgz unicore-uftpd.tgz Dockerfile docker-entrypoint.sh
 	docker build -t $(CONTAINER_TAG) .
