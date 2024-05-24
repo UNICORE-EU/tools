@@ -1,4 +1,4 @@
-FROM ubuntu:24.04
+FROM ubuntu:22.04
 
 RUN apt-get update -q
 
@@ -14,6 +14,8 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
     python3-minimal \
     default-jre-headless \
     git
+
+#RUN mkdir /sys/fs/cgroup/system.slice
 
 RUN rm -f  /usr/local/bin/docker-entrypoint.sh
 COPY docker-entrypoint.sh /usr/local/bin/
