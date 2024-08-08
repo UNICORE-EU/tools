@@ -71,5 +71,5 @@ make run-services PORT=7000
 
 ## Examples
 
-You can download the UCC commandline client from SourceForge and use it
-to access the endpoint(s) exposed by the container.
+You can download the [UCC commandline client](https://github.com/UNICORE-EU/commandline-client/releases) I
+and use it to access the endpoint(s) exposed by the container.
