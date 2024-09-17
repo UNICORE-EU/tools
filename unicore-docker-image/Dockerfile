@@ -8,7 +8,7 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
 
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
     hwloc make \
-    munge slurm slurmctld slurmd
+    munge slurmctld slurmd
 
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
     python3-minimal \
