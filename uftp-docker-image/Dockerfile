@@ -15,7 +15,7 @@ COPY unicore-authserver.tgz unicore-uftpd.tgz /tmp/
 
 EXPOSE 9000
 EXPOSE 64434
-EXPOSE 50000-50010
+EXPOSE 50000-50050
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
