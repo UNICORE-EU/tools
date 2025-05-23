@@ -1,5 +1,5 @@
 CONTAINER_NAME   = unicore-testing-all
-VERSION          = 10.1.0
+VERSION          = 10.2.0
 PATCH            = ""
 CONTAINER_REPO   = ghcr.io/unicore-eu
 CONTAINER        = $(CONTAINER_REPO)/$(CONTAINER_NAME)

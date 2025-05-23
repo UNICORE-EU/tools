@@ -118,6 +118,7 @@ tsi.unicorex_machine=localhost,dockerhost
 tsi.unicorex_port=7654
 tsi.my_addr=0.0.0.0
 tsi.my_port=4433
+tsi.disable_ipv6=1
 tsi.enforce_gids_consistency=true
 tsi.fail_on_invalid_gids=false
 tsi.default_job_name=UnicoreJob
