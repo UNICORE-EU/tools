@@ -1,4 +1,4 @@
-url = 'https://localhost:8080/DEMO-SITE/rest/core'
+url = 'https://localhost:9000/rest/auth'
 try:
     from urllib3 import disable_warnings
     disable_warnings()
@@ -13,6 +13,6 @@ try:
     r.json()
     if r.status_code==200:
         sys.exit(0)
-except:
+except Exception:
     pass
 sys.exit(1)
