@@ -13,6 +13,6 @@ try:
     r.json()
     if r.status_code==200:
         sys.exit(0)
-except:
+except Exception:
     pass
 sys.exit(1)
