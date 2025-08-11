@@ -1,6 +1,6 @@
 CONTAINER_NAME   = uftp-testing-all
-VERSION          = 3.4.1
-AUTHVERSION      = 2.9.0
+VERSION          = 3.5.1
+AUTHVERSION      = 3.1.0
 PATCH            = ""
 CONTAINER_REPO   = ghcr.io/unicore-eu
 CONTAINER        = $(CONTAINER_REPO)/$(CONTAINER_NAME)

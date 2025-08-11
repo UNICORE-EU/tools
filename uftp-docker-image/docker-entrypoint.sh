@@ -66,6 +66,7 @@ export MAX_CONNECTIONS=256
 export MAX_STREAMS=2
 export PORT_RANGE=50000:50050
 export DISABLE_IP_CHECK="yes"
+export DISABLE_IPv6="yes"
 
 export UFTP_KEYFILES=.ssh/authorized_keys:.uftp/authorized_keys
 export UFTP_NO_WRITE=.ssh/authorized_keys
