@@ -6,7 +6,7 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
     sudo nano less hostname
 
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
-    python3-minimal python-requests default-jre-headless 
+    python3-minimal python3-requests default-jre-headless 
 
 RUN rm -f /usr/local/bin/docker-entrypoint.sh
 COPY docker-entrypoint.sh /usr/local/bin/
