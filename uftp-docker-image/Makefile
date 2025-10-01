@@ -24,7 +24,7 @@ unicore-authserver.tgz:
 
 unicore-uftpd.tgz:
 	@echo "Downloading $(DOWNLOAD_UFTPD) ..."
-	@wget --quiet $(DOWNLOAD_UFTPD)/unicore-uftpd-$(VERSION)-1.tar.gz -O unicore-uftpd.tgz
+	@wget --quiet $(DOWNLOAD_UFTPD)/unicore-uftpd-$(UFTPDVERSION)-1.tar.gz -O unicore-uftpd.tgz
 
 build: unicore-authserver.tgz unicore-uftpd.tgz Dockerfile docker-entrypoint.sh
 	docker build -t $(CONTAINER_TAG) .
