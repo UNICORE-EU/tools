@@ -65,6 +65,17 @@ make run-services
 
 ## Examples
 
-You can download the UFTP commandline client from SourceForge and use it
+You can download the UFTP commandline client from Github and use it
 to access the endpoint(s) exposed by the container.
 
+Using the uftp client, you can test it via
+```bash
+uftp info -u demouser:test123 https://localhost:9000/rest/auth/TEST
+```
+
+Or use the Python client
+
+```bash
+pip install pyuftp
+pyuftp info -u demouser:test123 https://localhost:9000/rest/auth/TEST
+```

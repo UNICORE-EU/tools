@@ -36,7 +36,7 @@ _unicore_setup() {
     sudo -u unicore mv unicore-uftpd-* unicore-uftpd
 
     # configure user mapping so jobs run as "demouser"
-    sudo -u unicore cat > /opt/unicore/unicore-authserver/conf/simpleuudb <<EOF
+    sudo -u unicore cat > /opt/unicore/unicore-authserver/conf/user-mapfile.json <<EOF
 {
     "CN=Demo User, O=UNICORE, C=EU": {
         "role": [ "user" ],
@@ -86,6 +86,8 @@ EOF
     # key
     sed -i "s%credential.path=SET-ME%credential.path=/opt/unicore/certs/authserver-key.pem%"  /opt/unicore/unicore-authserver/conf/container.properties
     sed -i "s%credential.password=SET-ME%credential.password=%"  /opt/unicore/unicore-authserver/conf/container.properties
+    # fix bug in 3.2.0 default config
+    sed -i "s%user-mapfile.txt%user-mapfile.json%"  /opt/unicore/unicore-authserver/conf/container.properties
 
     sudo /opt/unicore/unicore-uftpd/bin/unicore-uftpd-start.sh
     sudo -u unicore /opt/unicore/unicore-authserver/bin/unicore-authserver-start.sh
