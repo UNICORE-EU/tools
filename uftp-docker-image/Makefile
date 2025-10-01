@@ -1,5 +1,6 @@
 CONTAINER_NAME   = uftp-testing-all
-VERSION          = 3.5.1
+VERSION          = 3.5.2
+UFTPDVERSION     = 3.5.1
 AUTHVERSION      = 3.2.0
 PATCH            = ""
 CONTAINER_REPO   = ghcr.io/unicore-eu
@@ -7,7 +8,7 @@ CONTAINER        = $(CONTAINER_REPO)/$(CONTAINER_NAME)
 CONTAINER_TAG    = $(CONTAINER):$(VERSION)
 CONTAINER_LATEST = $(CONTAINER):latest
 DOWNLOAD_AUTH    = "https://github.com/UNICORE-EU/uftp/releases/download/authserver-$(AUTHVERSION)"
-DOWNLOAD_UFTPD   = "https://github.com/UNICORE-EU/uftpd/releases/download/$(VERSION)"
+DOWNLOAD_UFTPD   = "https://github.com/UNICORE-EU/uftpd/releases/download/$(UFTPDVERSION)"
 
 # ports for running the services
 AUTH_PORT = 9000
@@ -45,4 +46,3 @@ clean:
 
 realclean: clean
 	@rm -f *.tgz
-
