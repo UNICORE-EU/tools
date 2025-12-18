@@ -1,4 +1,4 @@
-name: Latest UFTP Docker Image
+name: Versioned UFTP Docker Image
 
 on:
   push:
@@ -15,12 +15,15 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Get version info
+      run: echo "RELEASE_VERSION=${GITHUB_REF##*/}" | sed "s/uftp-docker-image-//" >> $GITHUB_ENV
+
     - name: Build the Docker image
-      run: cd uftp-docker-image; make build-latest
+      run: cd uftp-docker-image; make build
 
     - name: Log in to the Container registry
       run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Push image
-      run: docker push ghcr.io/unicore-eu/uftp-testing-all:latest
+      run: docker push ghcr.io/unicore-eu/uftp-testing-all:${{ env.RELEASE_VERSION }}
 

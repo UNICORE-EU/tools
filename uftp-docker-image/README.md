@@ -13,20 +13,20 @@ It can also serve for evaluating UFTP and its APIs.
 To start the container in interactive mode:
 
 ```bash
-docker run -p 9000:9000 -p 64434:64434 -p 50000-500010:50000-50010 -ti ghcr.io/unicore-eu/uftp-testing-all
+docker run -p 9000:9000 -p 64434:64434 -p 50000-50050:50000-50010 -ti ghcr.io/unicore-eu/uftp-testing-all
 ```
 
 or as a detached service
 
 ```bash
-docker run -p 9000:9000 -p 64434:64434 -p 50000-500010:50000-50010 -d ghcr.io/unicore-eu/uftp-testing-all
+docker run -p 9000:9000 -p 64434:64434 -p 50000-50010:50000-50050 -d ghcr.io/unicore-eu/uftp-testing-all
 ```
 
 The container exposes UFTP Authserver and UFTP on localhost
 
   * Authserver https://localhost:9000/rest/auth
   * UFTP FTP port localhost:64434
-  * UFTP data ports localhost 50000-50010
+  * UFTP data ports localhost 50000-50050
 
 and can be accessed via username "demouser" and password "test123"
 
