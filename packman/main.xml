@@ -7,7 +7,6 @@
 	<!-- These properties can be only overwritten from command line -->
 	<property name="maven.version" value="3.0.4" />
 	<property name="maven.repo.local" value="${user.home}/.m2/repository" />
-	<property name="maven.repo.url" value="https://unicore-dev.zam.kfa-juelich.de/maven" />
 	<property name="maven.repo.central" value="https://repo1.maven.org/maven2" />
 	<property name="package.config.dir" value="src/main/package" />
 	<property name="tempDir" value="${main.dir}/target/tmpPackman" />
@@ -208,10 +207,9 @@
 
 	<target name="init-settings" unless="skip.init">
 		<echo message="Getting information from pom.xml" />
-		<!--<mvn:remoteRepository id="vsgc-public" url="${maven.repo.url}" />
+		<!--
 		<mvn:localRepository id="local.repo" path="${maven.repo.local}" />
 		<mvn:pom id="mypom" file="${main.dir}/pom.xml">
-			<remoteRepository refid="vsgc-public" />
 			<localRepository refid="local.repo" />
 		</mvn:pom>
 	-->
@@ -555,7 +553,6 @@
 		<echo message="Updating jar files,download from maven repo" />
 		<aether:pom file="${main.dir}/pom.xml" id="mypom" />
 		<aether:remoterepos id="aether.repositories">
-			<remoterepo id="vsgc-public" url="${maven.repo.url}" />
 			<remoterepo id="central" url="${maven.repo.central}"/>
 		</aether:remoterepos>
 		<aether:localrepo dir="${maven.repo.local}" />
