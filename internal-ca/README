@@ -1,0 +1,43 @@
+Internal-CA
+***********
+
+This is a CA that can be used to issue certificates for an internal PKI.
+
+
+Usage
+*****
+
+The provided Makefile is used to initialise the CA, to create credentials, etc. (don't use the "./CA" script directly!)
+
+
+ * "make newca"
+
+    This deletes all issued certs and creates a new private key, effectively starting everything from scratch. 
+    The subject DN of the new CA certificate is set in the Makefile. The resulting CA certificate can be found 
+    in "certs/trusted/internal-unicore-cacert.pem"
+
+
+ * "make servicename.pem"
+
+    This issues a new credential for "servicename", for example "make unicorex-jupiter.pem".
+    The new credential can be found in "certs/servicename.pem", in a form directly useable by UNICORE services,
+    containing the (unencryted) private key, the certificate and the CA certificate key all in one pem file.
+    The service's certificate can be found in "certs/servicename.cert"
+
+
+ * "make all"
+
+    This issues new credentials for the list of services preconfigured in the Makefile
+
+
+ * "make list"
+
+    This lists the DNs of all generated certificates, in the form useable for UNICORE (RFC2253)
+
+
+* "make bundle"
+
+    This creates a tgz file with all the issued credentials and certificates
+
+
+Other targets like "make clean" and "make realclean" will remove generated credentials, use cautiously.

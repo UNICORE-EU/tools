@@ -1,0 +1,113 @@
+#!/bin/sh
+#
+# CA - simple script to setup a CA and issue a bunch of certificates
+#
+# CA -newca ... will setup the right stuff
+# CA -newreq ... will generate a certificate request
+# CA -sign ... will sign the generated request and output
+#
+# The files newkey.pem and newcert.pem (one has the (unencrypted) private key
+# and the other the signed certificate) can then be used to create a useable credential, e.g.
+# by cat'ting them into a single .pem file
+#
+# Based on work by Tim Hudson, tjh@cryptsoft.com
+#
+
+SSLEAY_CONFIG="-config openssl.cnf"
+CATOP="CAfiles"
+
+cp_pem() {
+    infile=$1
+    outfile=$2
+    bound=$3
+    flag=0
+    exec <$infile;
+    while read line; do
+	if [ $flag -eq 1 ]; then
+		echo $line|grep "^-----END.*$bound"  2>/dev/null 1>/dev/null
+		if [ $? -eq 0 ] ; then
+			echo $line >>$outfile
+			break
+		else
+			echo $line >>$outfile
+		fi
+	fi
+
+	echo $line|grep "^-----BEGIN.*$bound"  2>/dev/null 1>/dev/null
+	if [ $? -eq 0 ]; then
+		echo $line >$outfile
+		flag=1
+	fi
+    done
+}
+
+usage() {
+ echo "usage: $0 -newreq|-newca|-sign" >&2
+}
+
+if [ -z "$OPENSSL" ]; then OPENSSL=openssl; fi
+
+if [ -z "$DAYS" ] ; then DAYS="-days 3650" ; fi	# 10 years
+CADAYS="-days 7300"	# 20 years
+REQ="$OPENSSL req $SSLEAY_CONFIG"
+CA="$OPENSSL ca $SSLEAY_CONFIG"
+VERIFY="$OPENSSL verify"
+X509="$OPENSSL x509"
+
+if [ -z "$CATOP" ] ; then CATOP=/etc/pki/CA ; fi
+CAKEY=./cakey.pem
+CAREQ=./careq.pem
+CACERT=./cacert.pem
+RET=0
+
+while [ "$1" != "" ] ; do
+case $1 in
+-\?|-h|-help)
+    usage
+    exit 0
+    ;;
+-newreq)
+    # create a certificate request
+    echo "Creating certificate request for: ${SUBJECT}"
+    echo "$REQ -batch -new -noenc -keyout newkey.pem -out newreq.pem -subj \"$SUBJECT\""
+    $REQ -batch -new -noenc -keyout newkey.pem -out newreq.pem -subj "$SUBJECT"
+    RET=$?
+    ;;
+-newca)
+    # if explicitly asked for or it doesn't exist then setup the directory
+    # structure that Eric likes to manage things
+    NEW="1"
+    if [ "$NEW" -o ! -f ${CATOP}/serial ]; then
+	# create the directory hierarchy
+	mkdir -p ${CATOP}
+	mkdir -p ${CATOP}/certs
+	mkdir -p ${CATOP}/crl
+	mkdir -p ${CATOP}/newcerts
+	mkdir -p ${CATOP}/private
+	touch ${CATOP}/index.txt
+    fi
+    if [ ! -f ${CATOP}/private/$CAKEY ]; then
+	    echo "Creating CA certificate '${SUBJECT}'"
+	    $REQ -batch -noenc -new -keyout ${CATOP}/private/$CAKEY \
+			   -out ${CATOP}/$CAREQ -subj "$SUBJECT"
+	    $CA -create_serial -out ${CATOP}/$CACERT $CADAYS -batch -notext \
+			   -keyfile ${CATOP}/private/$CAKEY -selfsign \
+			   -extensions v3_ca \
+			   -infiles ${CATOP}/$CAREQ
+	    RET=$?
+	fi
+    ;;
+-sign)
+    echo "$CA -batch -passin pass:unicore -policy policy_anything $DAYS -out newcert.pem -infiles newreq.pem"
+    $CA -batch -passin pass:unicore -policy policy_anything $DAYS -out newcert.pem -notext -infiles newreq.pem
+    RET=$?
+    ;;
+*)
+    echo "Unknown arg $i" >&2
+    usage
+    exit 1
+    ;;
+esac
+shift
+done
+exit $RET
