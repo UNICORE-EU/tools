@@ -4,18 +4,13 @@ RUN apt-get update -q
 
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
     sudo nano less \
-    hostname wget curl
-
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
-    hwloc make \
-    munge slurmctld slurmd
-
-RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
+    hostname wget curl \
     python3-minimal \
     python3-requests \
-    default-jre-headless \
-    git
+    openjdk-21-jre-headless
 
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
+    hwloc munge slurmctld slurmd
 
 RUN rm -f /usr/local/bin/docker-entrypoint.sh
 COPY docker-entrypoint.sh /usr/local/bin/

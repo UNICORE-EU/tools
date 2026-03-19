@@ -98,7 +98,7 @@ _unicore_setup() {
     sudo -u unicore python3 ./install.py
 
     # configure user mapping so jobs run as "demouser"
-    sudo -u unicore cat > /opt/unicore/unicore-servers/unicorex/conf/simpleuudb <<EOF
+    sudo -u unicore cat > /opt/unicore/unicore-servers/unicorex/conf/user-mapfile.json <<EOF
 {
   "CN=Demo User, O=UNICORE, C=EU" : {
     "role": "user",
@@ -163,4 +163,3 @@ _main() {
 }
 
 _main "$@"
-
