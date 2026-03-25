@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 RUN apt-get update -q
 
@@ -7,10 +7,12 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
     hostname wget curl \
     python3-minimal \
     python3-requests \
-    openjdk-21-jre-headless
+    openjdk-21-jre-headless \
+    hwloc make
 
 RUN DEBIAN_FRONTEND="noninteractive" apt-get install -q -m -y \
-    hwloc munge slurmctld slurmd
+    slurmctld slurmd slurmrestd
+
 
 RUN rm -f /usr/local/bin/docker-entrypoint.sh
 COPY docker-entrypoint.sh /usr/local/bin/

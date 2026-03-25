@@ -1,7 +1,6 @@
 #!/bin/bash
 
 _munge_setup() {
-    id
     mkdir -p /run/munge
     chown munge:munge /run/munge
     sudo -u munge munged
@@ -17,11 +16,26 @@ _slurm_setup() {
     chown slurm:slurm /var/run/slurm
     mkdir -p /var/spool/slurm
     chown slurm:slurm /var/spool/slurm
+    mkdir -p /run/slurmctld
+    chown slurm:slurm /run/slurmctld
+    mkdir -p /var/spool/slurm/d
+    chown slurm:slurm /var/spool/slurm/d
+
+#
+# switch to cgroup/v1 otherwise slurmd won't start
+#
+     cat > /etc/slurm/cgroup.conf <<EOF
+    CgroupPlugin=cgroup/v1
+EOF
 
     cat > /etc/slurm/slurm.conf <<EOF
 
 SlurmctldHost=localhost
+
 AuthType=auth/munge
+AuthAltTypes=auth/jwt
+AuthAltParameters=jwt_key=/etc/slurm/jwt_hs256.key
+
 EnforcePartLimits=NO
 ProctrackType=proctrack/pgid
 ReturnToService=0
@@ -57,16 +71,28 @@ JobAcctGatherFrequency=30
 JobAcctGatherType=jobacct_gather/none
 SlurmctldDebug=3
 SlurmdDebug=3
+SlurmdParameters=config_overrides
 MailProg=/bin/true
 
 # COMPUTE NODES
 NodeName=$(hostname -s) CPUs=$(nproc) State=UNKNOWN
 PartitionName=batch Nodes=$(hostname -s) Default=YES MaxTime=INFINITE State=UP OverSubscribe=FORCE
 EOF
+
+    dd if=/dev/random of=/etc/slurm/slurm.key bs=1024 count=1
+    chown slurm:slurm /etc/slurm/slurm.key
+    chmod 600 /etc/slurm/slurm.key
+
+    dd if=/dev/random of=/etc/slurm/jwt_hs256.key bs=32 count=1
+    chown slurm:slurm /etc/slurm/jwt_hs256.key
+    chmod 600 /etc/slurm/jwt_hs256.key
+
     echo "    ... starting slurmctld."
     sudo -u slurm slurmctld
     echo "    ... starting slurmd."
     slurmd
+    echo "    ... starting slurmrestd (on port 11000)."
+    SLURM_JWT=daemon slurmrestd -u slurm -a rest_auth/jwt -s slurmctld :11000  &
 }
 
 _users_setup() {
